@@ -65,7 +65,7 @@ public class DataEntryFrame extends JFrame
 	 */
 	private JLabel firstNameInfo = new JLabel("First Name:");
 	private JTextField firstName = new JTextField(15);
-	private JLabel midddleInitialInfo = new JLabel("Middle Initial:");
+	private JLabel middleInitialInfo = new JLabel("Middle Initial:");
 	private JTextField middleInitial = new JTextField(1);
 	private JLabel lastNameInfo = new JLabel("Last Name:");
 	private JTextField lastName = new JTextField(15);
@@ -133,8 +133,23 @@ public class DataEntryFrame extends JFrame
 		this.add(formSelect);
 
 		// TODO: add in all form-fillable components:
-		JPanel formFill = new JPanel(/* TODO: add layout manager */);
-		
+		JPanel formFill = new JPanel(new GridLayout(8, 2));
+		formFill.add(firstNameInfo);
+        formFill.add(firstName);
+        formFill.add(middleInitialInfo);
+        formFill.add(middleInitial);
+        formFill.add(lastNameInfo);
+        formFill.add(lastName);
+        formFill.add(displayNameInfo);
+        formFill.add(displayName);
+        formFill.add(SSNInfo);
+        formFill.add(SSN);
+        formFill.add(phoneInfo);
+        formFill.add(phone);
+        formFill.add(emailInfo);
+        formFill.add(email);
+        formFill.add(addressInfo);
+		formFill.add(address);
 		// TODO: add to panel...
 		this.add(formFill);
 
