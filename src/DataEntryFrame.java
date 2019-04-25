@@ -3,7 +3,9 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -215,7 +217,7 @@ public class DataEntryFrame extends JFrame
 			}
 			else 
 			{
-			    errorField.setText("Vales were saved sucessfully.");
+			    errorField.setText("Values were saved sucessfully.");
 			}
 		});
 
@@ -249,14 +251,26 @@ public class DataEntryFrame extends JFrame
 		importButton.addActionListener((e) -> {
 
 			// TODO: Choose a file (hint, use JFileChooser):
-		    JFileChooser choice = new JFileChooser();
+		    JFileChooser choice = new JFileChooser(System.getProperty("user.dir"));
+		    choice.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		    choice.showOpenDialog(null);
 			// TODO: extract object from a file (hint, use file.getAbsolutePath()):
 			//		 You will use the file to replace the datalist object. I.e. you will be loading in a new
 			//		 list of formdata.
 		    File file1 = choice.getSelectedFile();
+		    try {
+		        FileInputStream fileIn = new FileInputStream(file1);
+                ObjectInputStream objectIn = new ObjectInputStream(fileIn);
+                datalist = (ArrayList<FormData>) objectIn.readObject();
+                objectIn.close();
+
+		    }
+		    catch (Exception e1) {
+		        errorField.setText("Error importing file.");
+		    }
+		    errorField.setText("Successfully imported file.");
 		    
-		    
-			// TODO: display error message on fail, else display success message
+			// display error message on fail, else display success message
 
         	// Use this code snippet to reset visuals after importing:
             int select = 0;
@@ -270,7 +284,7 @@ public class DataEntryFrame extends JFrame
 		exportButton.addActionListener((e) -> {
 
 			// TODO: Choose a file (hint, use JFileChooser):
-		    JFileChooser choice2 = new JFileChooser();
+		    JFileChooser choice2 = new JFileChooser(System.getProperty("user.dir"));
 		    choice2.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		    choice2.showOpenDialog(null);
 		    
@@ -289,6 +303,8 @@ public class DataEntryFrame extends JFrame
 		    errorField.setText("Successfully exported data.");
 			// TODO: export datalist from a file (hint, use file.getAbsolutePath()):
 			// TODO: display error message on fail, else display success message
+		    
+		    
 		});
 
 		// TODO: add import/export to panel and add to frame
