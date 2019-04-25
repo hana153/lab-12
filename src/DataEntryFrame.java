@@ -97,10 +97,10 @@ public class DataEntryFrame extends JFrame
 	{
 		// TODO: set the text fields and the signature as corresponding to the fields in FormData.
 	   firstName.setText(data.getFirstName());
-	   // middleInitial.setText(data.getMiddleInitial());
+	   middleInitial.setText(Character.toString(data.getMiddleInitial()));
 	   lastName.setText(data.getLastName());
 	   displayName.setText(data.getDisplayName());
-	   // SSN.setTest(data.getSSN());
+	   SSN.setText(data.getSSN());
 	   phone.setText(data.getPhone());
 	   email.setText(data.getEmail());
 	   address.setText(data.getAddress());
@@ -134,6 +134,7 @@ public class DataEntryFrame extends JFrame
 
 		// TODO: add in all form-fillable components:
 		JPanel formFill = new JPanel(new GridLayout(8, 2));
+		
 		formFill.add(firstNameInfo);
         formFill.add(firstName);
         formFill.add(middleInitialInfo);
@@ -150,6 +151,7 @@ public class DataEntryFrame extends JFrame
         formFill.add(email);
         formFill.add(addressInfo);
 		formFill.add(address);
+		
 		// TODO: add to panel...
 		this.add(formFill);
 
@@ -206,10 +208,18 @@ public class DataEntryFrame extends JFrame
 		});
 
 		// TODO: add buttons to panel and add to frame
-
+		formHandling.add(createForm);
+		formHandling.add(saveForm);
+		formHandling.add(resetForm);
+		
+		this.add(formHandling);
+	
 		// Add in the error message field:
 		this.errorField.setEditable(false);
 		// TODO: add error field to frame
+		
+		this.add(errorField);
+		
 
 		// Add in the import/export panel:
 		JButton importButton = new JButton("Import");
@@ -242,6 +252,11 @@ public class DataEntryFrame extends JFrame
 		});
 
 		// TODO: add import/export to panel and add to frame
+		
+		JPanel ioPanel = new JPanel(new GridLayout(1, 2));
+		ioPanel.add(importButton);
+		ioPanel.add(exportButton);
+		this.add(ioPanel);
 
 		// JFrame basics:
 		this.setTitle("Example Form Fillout");
