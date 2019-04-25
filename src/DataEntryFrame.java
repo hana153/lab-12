@@ -2,12 +2,16 @@ import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -95,7 +99,7 @@ public class DataEntryFrame extends JFrame
 	 */
 	private void setVisuals(FormData data)
 	{
-		// TODO: set the text fields and the signature as corresponding to the fields in FormData.
+		// set the text fields and the signature as corresponding to the fields in FormData.
 	   firstName.setText(data.getFirstName());
 	   middleInitial.setText(Character.toString(data.getMiddleInitial()));
 	   lastName.setText(data.getLastName());
@@ -132,7 +136,7 @@ public class DataEntryFrame extends JFrame
 		});
 		this.add(formSelect);
 
-		// TODO: add in all form-fillable components:
+		// add in all form-fillable components:
 		JPanel formFill = new JPanel(new GridLayout(8, 2));
 		
 		formFill.add(firstNameInfo);
@@ -152,7 +156,7 @@ public class DataEntryFrame extends JFrame
         formFill.add(addressInfo);
 		formFill.add(address);
 		
-		// TODO: add to panel...
+		// add to panel...
 		this.add(formFill);
 
 		// Add in the signature panel:
@@ -164,7 +168,9 @@ public class DataEntryFrame extends JFrame
 			@Override
 			public void mouseDragged(MouseEvent e)
 			{
-				// TODO: add a point to the panel on drag and repaint.
+				// add a point to the panel on drag and repaint.
+			    spanel.addPoint(e.getPoint());
+			    spanel.repaint();
 			}
 		});
 		this.add(signatureInfo);
@@ -189,25 +195,39 @@ public class DataEntryFrame extends JFrame
 		saveForm.addActionListener((e) -> {
 			int select = formSelect.getSelectedIndex();
 
-			// TODO: use the JTextFields and the signature panel to set the values
+			// use the JTextFields and the signature panel to set the values
 			// of the selected FormData object.
+			
+			FormData saved = datalist.get(select);
+			boolean answer = saved.setValues(firstName.getText(), middleInitial.getText().toCharArray()[0], 
+			        lastName.getText(), displayName.getText(), SSN.getText(), phone.getText(), email.getText(), 
+			        address.getText(), spanel.getSignature());
 
 			this.setVisuals(datalist.get(select));
 			DefaultComboBoxModel<String> newComboBoxModel = getComboBoxModel(datalist);
 			formSelect.setModel(newComboBoxModel);
 			formSelect.setSelectedIndex(select);
 
-			// TODO: display an error message if setting the values failed. Else, display a success message.
+			// display an error message if setting the values failed. Else, display a success message.
+			if (!answer)
+			{
+			    errorField.setText("Unable to set values.");
+			}
+			else 
+			{
+			    errorField.setText("Vales were saved sucessfully.");
+			}
 		});
 
 		JButton resetForm = new JButton("Reset");
 		resetForm.addActionListener((e) -> {
 			int select = formSelect.getSelectedIndex();
-			// TODO: reset the values on the selected form data
+			// reset the values on the selected form data
 			this.setVisuals(datalist.get(select));
+			datalist.get(select).reset();
 		});
 
-		// TODO: add buttons to panel and add to frame
+		// add buttons to panel and add to frame
 		formHandling.add(createForm);
 		formHandling.add(saveForm);
 		formHandling.add(resetForm);
@@ -216,7 +236,7 @@ public class DataEntryFrame extends JFrame
 	
 		// Add in the error message field:
 		this.errorField.setEditable(false);
-		// TODO: add error field to frame
+		// add error field to frame
 		
 		this.add(errorField);
 		
@@ -229,24 +249,44 @@ public class DataEntryFrame extends JFrame
 		importButton.addActionListener((e) -> {
 
 			// TODO: Choose a file (hint, use JFileChooser):
+		    JFileChooser choice = new JFileChooser();
 			// TODO: extract object from a file (hint, use file.getAbsolutePath()):
 			//		 You will use the file to replace the datalist object. I.e. you will be loading in a new
 			//		 list of formdata.
+		    File file1 = choice.getSelectedFile();
+		    
+		    
 			// TODO: display error message on fail, else display success message
 
         	// Use this code snippet to reset visuals after importing:
-			/*
             int select = 0;
 			DefaultComboBoxModel<String> newComboBoxModel = getComboBoxModel(datalist);
 			formSelect.setModel(newComboBoxModel);
 			formSelect.setSelectedIndex(select);
 			this.setVisuals(datalist.get(select));
-			*/
+			
 		});
 		JButton exportButton = new JButton("Export");
 		exportButton.addActionListener((e) -> {
 
 			// TODO: Choose a file (hint, use JFileChooser):
+		    JFileChooser choice2 = new JFileChooser();
+		    choice2.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		    choice2.showOpenDialog(null);
+		    
+		    File file2 = choice2.getSelectedFile();
+		    
+		    try {
+		        FileOutputStream fileOut = new FileOutputStream(file2);
+		        ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
+		        objectOut.writeObject(datalist);
+		        objectOut.close();
+		    }
+		    catch (Exception e2)
+		    {
+		        errorField.setText("Failed to export data.");
+		    }
+		    errorField.setText("Successfully exported data.");
 			// TODO: export datalist from a file (hint, use file.getAbsolutePath()):
 			// TODO: display error message on fail, else display success message
 		});
